@@ -13,10 +13,9 @@ namespace
 
 
 Spaceship::Spaceship(Type type, const TextureHolder& textures, const FontHolder& fonts, const IconHolder& icons) :
-    Entity(Table[type].life),
+    Entity(textures, Table[type].life, Table[type].explode_Anim),
     mType(type),
-    mSprite(textures.get(Table[type].texture)),
-    mExplodeAnim(Table[type].explode_Anim, textures)
+    mSprite(textures.get(Table[type].texture))
 {
     centerOrigin(mSprite);
     setFaction(Table[type].faction);
@@ -50,15 +49,6 @@ Spaceship::Spaceship(Type type, const TextureHolder& textures, const FontHolder&
     mLifeText = LifeText.get();
     attachChild(std::move(LifeText));
 
-    // Explode Animation
-    Command destroyOnExplode;
-    destroyOnExplode.category = Category::Spaceship;
-    destroyOnExplode.action = derivedAction<Spaceship> ([this] (SceneNode&, sf::Time)
-    {
-        this->destroy();
-    });
-    mExplodeAnim.setEndAction(destroyOnExplode);
-
 }
 
 void Spaceship::updateCurrent(sf::Time dt, CommandQueue& Commands)
@@ -66,9 +56,10 @@ void Spaceship::updateCurrent(sf::Time dt, CommandQueue& Commands)
     if(mNeedRemove)
         return;
 
+    Entity::updateCurrent(dt, Commands);
+
     if(!isDying())
     {
-        Entity::updateCurrent(dt, Commands);
         mLifeText->setString(toString(getStats().life) + " HP");
         mLifeText->setPosition(0.f, 50.f);
         mLifeText->setRotation(-getRotation());
@@ -76,19 +67,6 @@ void Spaceship::updateCurrent(sf::Time dt, CommandQueue& Commands)
         if(!isAllied())
             shoot(Weapon::Main);
     }
-
-    else
-    {
-        if(!mExplodeAnim.isRunning())
-        {
-            mExplodeAnim.start();
-            playSound(Sounds::ClassicExplode, Commands);
-        }
-
-        else
-            mExplodeAnim.play(dt, Commands);
-    }
-
 
 }
 
@@ -146,7 +124,7 @@ void Spaceship::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) c
     if(!isDying())
         target.draw(mSprite, states);
     else
-        target.draw(mExplodeAnim, states);
+        target.draw(mDyingAnim, states);
 
     Entity::drawForces(target, states);
 }

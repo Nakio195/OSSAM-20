@@ -53,11 +53,17 @@ void AsteroidGenerator::stop()
 void AsteroidGenerator::trigger(sf::Time dt, CommandQueue &Commands)
 {
     std::unique_ptr<Debris> debris(new Debris(Debris::Asteroid, mTextures));
-    debris->setSpin(spin());
 
+    float Spin = spin();
     float Angle = angle();
     float Speed = speed();
 
+    if(Spin > 0 && Spin < 20)
+        Spin = 20.f;
+    if(Spin < 0 && Spin > -20)
+        Spin = -20.f;
+
+    debris->setSpin(spin());
     debris->setSpeed(Speed);
     debris->applyForce(fromAngle(Angle)*Speed, Force::Constant);
 
@@ -66,5 +72,11 @@ void AsteroidGenerator::trigger(sf::Time dt, CommandQueue &Commands)
     debris->takeDamage(static_cast<int>(debris->getHealthPoints()*(1.f-debrisScale)));
 
     attachChild(std::move(debris));
+
+    std::cout << "## Asteroid ##" << std::endl;
+    std::cout << "\tAngle : " << Angle << std::endl;
+    std::cout << "\tSpin: " << Spin << std::endl;
+    std::cout << "\tSpeed : " << Speed << std::endl;
+    std::cout << "\tScale : " << debrisScale << std::endl;
 }
 

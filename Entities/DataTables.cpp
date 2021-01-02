@@ -11,7 +11,7 @@ std::vector<SpaceShipData> initSpaceship()
     std::vector<SpaceShipData> data(Spaceship::TypeCount);
 
     data[Spaceship::Khaal].life = 100;
-    data[Spaceship::Khaal].speed = 300.f;
+    data[Spaceship::Khaal].speed = 500.f;
     data[Spaceship::Khaal].inertia = 0.95f;
     data[Spaceship::Khaal].shield = 200.f;
     data[Spaceship::Khaal].generator = 10;

@@ -1,5 +1,5 @@
-#ifndef BOOK_APPLICATION_HPP
-#define BOOK_APPLICATION_HPP
+#ifndef APPLICATION_HPP
+#define APPLICATION_HPP
 
 #include "Ressources/RessourceHolder.h"
 #include "Ressources/RessourceIdentifiers.h"

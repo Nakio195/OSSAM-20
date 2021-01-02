@@ -1,36 +1,40 @@
 #include "Debris.h"
 #include "DataTables.h"
 
+#include "System/Utilities.h"
+
 namespace
 {
     const std::vector<DebrisData> Table = initDebris();
 }
 
 
-Debris::Debris(Debris::Type type, const TextureHolder& textures) : Entity(Table[type].life),
+Debris::Debris(Debris::Type type, const TextureHolder& textures) : Entity(textures, Table[type].life),
     mSprite(textures.get(Table[type].texture)),
     mExplodeSound(Table[type].explosionSound)
 {
+    centerOrigin(mSprite);
     setSpeed(Table[type].speed);
     mSize = 0;
 }
 
 void Debris::updateCurrent(sf::Time dt, CommandQueue &Commands)
 {
+    Entity::updateCurrent(dt, Commands);
+
     if(!isDying())
     {
-        //accelerate(getVelocity());
         mSprite.rotate(mRotation*dt.asSeconds());
-        Entity::updateCurrent(dt, Commands);
     }
 
-    else
-        destroy();
 }
 
 void Debris::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
+    if(!isDying())
+        target.draw(mSprite, states);
+    else
+        target.draw(mDyingAnim, states);
     Entity::drawForces(target, states);
 }
 

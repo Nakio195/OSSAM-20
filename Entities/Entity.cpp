@@ -4,15 +4,23 @@
 
 using namespace std::placeholders;
 
-Entity::Entity(int HealthPoints) : SceneNode()
+Entity::Entity(const TextureHolder& textures, int HealthPoints, Animation::Type type) : SceneNode(), mDyingAnim(type, textures)
 {
     mHealthPoints = HealthPoints;
     mFaction = Faction::None;
     mDead = false;
     mDying = false;
-    mAcceleration = 10.f;
+    mAcceleration = 0.f;
     mInertia = 1.f;
     mSpeed = 100.f;
+
+    Command destroyOnExplode;
+    destroyOnExplode.category = Category::Entity;
+    destroyOnExplode.action = derivedAction<Entity> ([this] (SceneNode&, sf::Time)
+    {
+        this->destroy();
+    });
+    mDyingAnim.setEndAction(destroyOnExplode);
 }
 
 void Entity::setInertia(float inertia)
@@ -154,25 +162,41 @@ void Entity::updateForces(sf::Time dt)
         force.update(dt);
     }
 
-    if(count != 0)
-        result /= static_cast<float>(count);
+    mForces.remove_if([] (const Force& force) {return force.type == Force::Finished;});
+
+    //if(count != 0)
+    //    result /= static_cast<float>(count);
 
     mDirection = result;
 
-    mForces.remove_if([] (const Force& force) {return force.type == Force::Finished;});
 }
 
-void Entity::updateCurrent(sf::Time dt, CommandQueue&)
+void Entity::updateCurrent(sf::Time dt, CommandQueue& Commands)
 {
-    updateForces(dt);
+    if(!isDying())
+    {
+        updateForces(dt);
 
-    if(mAcceleration != 0.f)
-        mVelocity = mDirection * mAcceleration*dt.asSeconds();
+        if(mAcceleration != 0.f)
+            mVelocity = mDirection * mAcceleration;//*dt.asSeconds();
+        else
+            mVelocity = mDirection;
+
+        mVelocity = saturateVector(mVelocity, mSpeed);
+        move(mVelocity*dt.asSeconds());
+    }
+
     else
-        mVelocity = mDirection;
+    {
+        if(!mDyingAnim.isRunning())
+        {
+            mDyingAnim.start();
+            playSound(Sounds::ClassicExplode, Commands);
+        }
 
-    mVelocity = saturateVector(mVelocity, mSpeed);
-    move(mVelocity*dt.asSeconds());
+        else
+            mDyingAnim.play(dt, Commands);
+    }
 }
 
 void Entity::drawForces(sf::RenderTarget &target, sf::RenderStates &) const

@@ -18,7 +18,7 @@ namespace
     const std::vector<ProjectileData> Table = initProjectiles();
 }
 
-Projectile::Projectile(Type type, const TextureHolder& textures) : Entity(1), mType(type), mSprite(textures.get(Table[type].texture)), mTargetDirection()
+Projectile::Projectile(Type type, const TextureHolder& textures) : Entity(textures), mType(type), mSprite(textures.get(Table[type].texture)), mTargetDirection()
 {
     centerOrigin(mSprite);
     setAcceleration(0.f);
@@ -36,17 +36,31 @@ bool Projectile::isGuided() const
     return false;
 }
 
+void Projectile::kill()
+{
+    Entity::kill();
+
+    Command destroyChilds;
+    destroyChilds.category = Category::Emitter;
+    destroyChilds.action = derivedAction<SceneNode> ([this] (SceneNode&, sf::Time)
+    {
+        this->destroy();
+    });
+
+    onCommand(destroyChilds, sf::Time::Zero);
+}
+
 void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
-   if(isDying())
-       destroy();
-
     Entity::updateCurrent(dt, commands);
 }
 
 void Projectile::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mSprite, states);
+    if(!isDying())
+        target.draw(mSprite, states);
+    else
+        target.draw(mDyingAnim, states);
 }
 
 unsigned int Projectile::getSceneCategory() const

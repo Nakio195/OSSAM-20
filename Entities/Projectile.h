@@ -23,6 +23,8 @@ class Projectile : public Entity
         virtual unsigned int getSceneCategory() const override;
         virtual sf::FloatRect getBoundingRect() const override;
 
+        void kill() override;
+
         bool isGuided() const;
         float getMaxSpeed() const;
         int getDamage() const;

@@ -6,6 +6,8 @@
 #include "System/Scene/SceneNode.h"
 #include "Ressources/RessourceIdentifiers.h"
 
+#include "System/Animation.h"
+
 namespace Faction
 {
     enum ID
@@ -40,9 +42,9 @@ struct Force
 class Entity : public SceneNode
 {
     public:
-        Entity(int HealthPoints = 1);
+        Entity(const TextureHolder& textures, int HealthPoints = 1, Animation::Type type = Animation::Type::Classic_Explode);
 
-        virtual void updateCurrent(sf::Time dt, CommandQueue&) override;
+        virtual void updateCurrent(sf::Time dt, CommandQueue&Commands) override;
 
         /** GamePlay **/
         void setFaction(Faction::ID faction);
@@ -56,7 +58,8 @@ class Entity : public SceneNode
         virtual void takeDamage(int damages);
         virtual void takeRepair(int repair);
 
-        /** Physic **/        void setAcceleration(float acceleration);
+        /** Physic **/
+        void setAcceleration(float acceleration);
         float getAcceleration();
         void setSpeed(float speed);
         float getSpeed();
@@ -79,23 +82,30 @@ class Entity : public SceneNode
         /** visual Debug **/
         void drawForces(sf::RenderTarget &target, sf::RenderStates &) const;
 
+    protected:
+        /** My animations **/
+        Animation mDyingAnim;
+
     private:
         void setVelocity(sf::Vector2f velocity);
         void setVelocity(float x, float y);
 
+        /** My stats **/
+        int mHealthPoints;
         bool mDead;
         bool mDying;
+        Faction::ID mFaction;
 
-        float mAcceleration;
+        /** My physic **/
         std::list<Force> mForces;
         sf::Vector2f mVelocity;
         sf::Vector2f mDirection;
-
-        int mHealthPoints;
-        Faction::ID mFaction;
-
+        float mAcceleration;
         float mInertia;
         float mSpeed;
+
+
+
 };
 
 #endif // ENTITY_H

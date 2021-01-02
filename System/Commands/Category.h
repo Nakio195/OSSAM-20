@@ -13,7 +13,7 @@ namespace Category
         PlayerSpaceship = 4,
         AlliedSpaceship = 8,
         EnemySpaceship = 16,
-        Spaceship = PlayerSpaceship |AlliedSpaceship | EnemySpaceship,
+        Spaceship = PlayerSpaceship | AlliedSpaceship | EnemySpaceship,
 
         AlliedProjectile = 32,
         EnemyProjectile = 64,
@@ -28,15 +28,18 @@ namespace Category
 
         TextNode        = 4096,
         SpriteNode      = 8192,
-        Weapon          = 1 << 14,
 
         SoundNode       = 1 << 15,
         AnimationNode   = 1 << 16,
 
         Debris          = 1 << 17,
+        Weapon          = 1 << 14,
+        Object          = Debris | Weapon,
 
         CommandGenerator    = 1 << 18,
-        DebrisGenerator     = 1 << 19
+        DebrisGenerator     = 1 << 19,
+
+        Entity          = Spaceship | Projectile | Object
     };
 }
 

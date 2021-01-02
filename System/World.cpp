@@ -10,7 +10,7 @@
 
 World::World(sf::RenderWindow& window, SoundPlayer& sounds) : mWindow(window), mSounds(sounds), mTextures(), mFonts(), mSceneGraph(), mSceneLayers()
 {
-    mWorldBounds = sf::FloatRect(0.f, 0.f, 2000.f, mWorldView.getSize().y);
+    mWorldBounds = sf::FloatRect(0.f, 0.f, 8000.f, mWorldView.getSize().y);
     mSpawnPosition = sf::Vector2f(mWorldView.getSize().x /4.f, mWorldView.getSize().y / 2.f);
 
     mWorldView = window.getDefaultView();
@@ -134,7 +134,7 @@ void World::handleCollisions()
             {
                 // Apply projectile damage to aircraft, destroy projectile
                 spaceship.takeDamage(projectile);
-                projectile.destroy();
+                projectile.kill();
             }
         }
 
@@ -145,7 +145,7 @@ void World::handleCollisions()
             auto& debris = static_cast<Debris&>(*pair.second);
 
             spaceship.takeDamage(debris.getHealthPoints());
-            debris.destroy();
+            debris.kill();
         }
 
         else if (matchesCategories(pair, Category::Debris, Category::Projectile))
@@ -328,15 +328,15 @@ void World::buildScene()
     //Add Asteroid generator
     std::unique_ptr<AsteroidGenerator> asteroidGenerator(new AsteroidGenerator(mTextures));
     asteroidGenerator->speed.setRange(5.f, 100.f);
-    asteroidGenerator->angle.setRange(90, -90.f);
-    asteroidGenerator->spin.setRange(-20.f, 20.f);
-    asteroidGenerator->frequency.setRange(2.f, 2.5f);
-    asteroidGenerator->scale.setRange(0.5f, 1.f);
-    asteroidGenerator->setPosition(600, 400);
+    asteroidGenerator->angle.setRange(45, 135.f);
+    asteroidGenerator->spin.setRange(-60.f, 60.f);
+    asteroidGenerator->frequency.setRange(2.f, 5.f);
+    asteroidGenerator->scale.setRange(0.1f, 1.f);
+    asteroidGenerator->setPosition(2500, -100);
     asteroidGenerator->start();
     mSceneLayers[Space]->attachChild(std::move(asteroidGenerator));
 
-/*
+
     // Add ennemies
     addEnemy(Spaceship::Intercepter, 1500.f, 0.f);
 
@@ -347,7 +347,7 @@ void World::buildScene()
     addEnemy(Spaceship::Blade, 3400.f, -140.f);
     addEnemy(Spaceship::Blade, 3600.f, 70.f);
     addEnemy(Spaceship::Blade, 3400.f, 140.f);
-    addEnemy(Spaceship::Blade, 3600.f, -70.f);*/
+    addEnemy(Spaceship::Blade, 3600.f, -70.f);
 }
 
 

@@ -77,7 +77,7 @@ class Spaceship : public Entity
         Weapon *mSecondaryWeapon;
 
         /** Graphics and animations **/
-        Animation mExplodeAnim;
+
 
 };
 

@@ -17,7 +17,8 @@ using namespace std;
 class Animation : public sf::Drawable, public sf::Transformable
 {
     public:
-        enum Type{Khaal_Explode,
+        enum Type{None,
+                  Khaal_Explode,
                   Classic_Explode,
                   LaserBlue_Fire,
                   Planet1,

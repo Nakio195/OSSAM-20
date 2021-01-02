@@ -61,7 +61,7 @@ void SceneNode::draw(sf::RenderTarget &target, sf::RenderStates states) const
         child->draw(target, states);
     }
 
-    drawBoundingRect(target, states);
+    //drawBoundingRect(target, states);
 }
 
 void SceneNode::drawBoundingRect(sf::RenderTarget& target, sf::RenderStates) const

@@ -13,7 +13,7 @@ namespace
 
 Weapon::Weapon(Weapon::Type type, const TextureHolder& textures, const IconHolder& icons) :
     Item(Table[type].name, icons, Table[type].icon),
-    Entity()
+    Entity(textures)
 {
     SceneNode::mDefaultCategory = Category::Weapon;
     mType = type;
