@@ -4,6 +4,7 @@
 
 
 unsigned long SceneNode::UniqueSceneID = 1;
+unsigned long SceneNode::SceneCount = 0;
 
 SceneNode::SceneNode(Category::Type categorie) : Drawable(), Transformable(), NonCopyable(), mDefaultCategory(categorie), mID(UniqueSceneID)
 {
@@ -43,6 +44,7 @@ bool SceneNode::isSceneGraphChanged()
     {
         for(auto& child : mChildren)
         {
+            SceneCount++;
             if(child->isSceneGraphChanged())
                 return true;
         }

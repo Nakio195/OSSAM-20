@@ -35,7 +35,7 @@ void Debris::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) cons
         target.draw(mSprite, states);
     else
         target.draw(mDyingAnim, states);
-    Entity::drawForces(target, states);
+    //Entity::drawForces(target, states);
 }
 
 void Debris::setSpin(float spin)

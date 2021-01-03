@@ -163,10 +163,6 @@ void Entity::updateForces(sf::Time dt)
     }
 
     mForces.remove_if([] (const Force& force) {return force.type == Force::Finished;});
-
-    //if(count != 0)
-    //    result /= static_cast<float>(count);
-
     mDirection = result;
 
 }
@@ -178,7 +174,7 @@ void Entity::updateCurrent(sf::Time dt, CommandQueue& Commands)
         updateForces(dt);
 
         if(mAcceleration != 0.f)
-            mVelocity = mDirection * mAcceleration;//*dt.asSeconds();
+            mVelocity = mDirection * mAcceleration*dt.asSeconds();
         else
             mVelocity = mDirection;
 

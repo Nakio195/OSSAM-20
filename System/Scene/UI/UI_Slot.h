@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-#include "../UserInterface.h"
-#include "../../Items/Item.h"
+#include "../../UserInterface.h"
+#include "../../../Items/Item.h"
 
 class UI_Slot : public UserInterface
 {

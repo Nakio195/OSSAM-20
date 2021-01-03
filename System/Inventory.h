@@ -5,8 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "UserInterface.h"
-#include "UI/UI_Button.h"
-#include "UI/UI_Slot.h"
+#include "Scene/UI/UI_Button.h"
+#include "Scene/UI/UI_Slot.h"
 #include "../Items/Weapons/Weapon.h"
 #include "../Items/Shield.h"
 

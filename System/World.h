@@ -29,6 +29,7 @@ class World : private sf::NonCopyable
         void buildScene();
 
         void addEnemy(Spaceship::Type type, float x, float y);
+        void addLevelLock(float x);
         void spawnEnemies();
         void cleanOutterWorld();
 
@@ -49,6 +50,32 @@ class World : private sf::NonCopyable
             Spaceship::Type type;
             float x;
             float y;
+        };
+
+        class LevelLock
+        {
+            public:
+            typedef std::unique_ptr<LevelLock> ptr;
+
+            LevelLock(float pX)
+            {
+                x = pX;
+                on = true;
+                triggered = false;
+                releaseCondition.category = Category::EnemySpaceship;
+                releaseCondition.action = [this] (SceneNode& node, sf::Time) {
+                    this->on = !node.isDead();
+                };
+            }
+
+            private:
+            LevelLock(const LevelLock& cop);
+
+            public:
+            Command releaseCondition;
+            bool on;
+            bool triggered;
+            float x;
         };
 
     private:
@@ -77,6 +104,7 @@ class World : private sf::NonCopyable
 
         Spaceship* mPlayerSpaceship;
         std::vector<SpawnPoint> mEnemySpawnPoints;
+        std::vector<LevelLock::ptr> mLevelLocks;
 };
 
 #endif // WORLD_H

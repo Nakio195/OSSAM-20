@@ -28,6 +28,11 @@ void EmitterNode::updateCurrent(sf::Time dt, CommandQueue &Commands)
     }
 }
 
+unsigned int EmitterNode::getSceneCategory() const
+{
+    return Category::Emitter;
+}
+
 void EmitterNode::emitParticles(sf::Time dt)
 {
     const float emissionRate = 100.f;

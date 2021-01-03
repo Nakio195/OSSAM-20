@@ -11,7 +11,9 @@ class EmitterNode : public SceneNode
     public:
         EmitterNode(Particle::Type type);
 
-        virtual void updateCurrent(sf::Time dt, CommandQueue &Commands);
+        virtual void updateCurrent(sf::Time dt, CommandQueue &Commands) override;
+
+        unsigned int getSceneCategory() const override;
 
         void emitParticles(sf::Time dt);
 

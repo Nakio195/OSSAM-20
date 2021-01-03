@@ -18,7 +18,7 @@ namespace
     const std::vector<ProjectileData> Table = initProjectiles();
 }
 
-Projectile::Projectile(Type type, const TextureHolder& textures) : Entity(textures), mType(type), mSprite(textures.get(Table[type].texture)), mTargetDirection()
+Projectile::Projectile(Type type, const TextureHolder& textures) : Entity(textures, 1, Table[type].explode_Anim), mType(type), mSprite(textures.get(Table[type].texture)), mTargetDirection()
 {
     centerOrigin(mSprite);
     setAcceleration(0.f);
@@ -40,14 +40,14 @@ void Projectile::kill()
 {
     Entity::kill();
 
-    Command destroyChilds;
-    destroyChilds.category = Category::Emitter;
-    destroyChilds.action = derivedAction<SceneNode> ([this] (SceneNode&, sf::Time)
+    Command destroyChild;
+    destroyChild.category = Category::Emitter;
+    destroyChild.action = derivedAction<EmitterNode> ([] (SceneNode& node, sf::Time)
     {
-        this->destroy();
+        node.destroy();
     });
 
-    onCommand(destroyChilds, sf::Time::Zero);
+    onCommand(destroyChild, sf::Time::Zero);
 }
 
 void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)

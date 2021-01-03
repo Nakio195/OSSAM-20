@@ -38,7 +38,6 @@ HEADERS += \
 #    Items/Weapons/Bullet/Laser.h \
 #    Items/Weapons/Bullet/Missile.h \
     Items/Weapons/Weapon.h \
-    System/ATH.h \
     System/Animation.h \
     System/AnimationKey.h \
     System/AnimationKey/RotationKey.h \
@@ -59,6 +58,7 @@ HEADERS += \
     System/Scene/AnimationNode.h \
     System/Scene/AsteroidGenerator.h \
     System/Scene/EmitterNode.h \
+    System/Scene/UI/HudNode.h \
     System/Scene/Particle.h \
     System/Scene/ParticleNode.h \
     System/Scene/SoundNode.h \
@@ -75,9 +75,9 @@ HEADERS += \
     System/States/GameState.h \
     System/States/TitleState.h \
     System/Timer.h \
-#    System/UI/UI_Button.h \
-#    System/UI/UI_Slot.h \
-#    System/UserInterface.h \
+    System/Scene/UI/UI_Button.h \
+    System/Scene/UI/UI_Slot.h \
+    System/UserInterface.h \
     System/Utilities.h \
     System/World.h
 
@@ -94,7 +94,6 @@ SOURCES += \
 #        Items/Weapons/Bullet/Laser.cpp \
 #        Items/Weapons/Bullet/Missile.cpp \
         Items/Weapons/Weapon.cpp \
-        System/ATH.cpp \
         System/Animation.cpp \
         System/AnimationKey.cpp \
         System/AnimationKey/RotationKey.cpp \
@@ -111,6 +110,7 @@ SOURCES += \
     System/Scene/AnimationNode.cpp \
     System/Scene/AsteroidGenerator.cpp \
         System/Scene/EmitterNode.cpp \
+    System/Scene/UI/HudNode.cpp \
         System/Scene/ParticleNode.cpp \
     System/Scene/SoundNode.cpp \
         System/Scene/TextNode.cpp \
@@ -125,9 +125,9 @@ SOURCES += \
         System/States/GameState.cpp \
         System/States/TitleState.cpp \
         System/Timer.cpp \
-#        System/UI/UI_Button.cpp \
-#        System/UI/UI_Slot.cpp \
-#        System/UserInterface.cpp \
+        System/Scene/UI/UI_Button.cpp \
+        System/Scene/UI/UI_Slot.cpp \
+        System/UserInterface.cpp \
         System/Utilities.cpp \
         System/World.cpp \
         main.cpp

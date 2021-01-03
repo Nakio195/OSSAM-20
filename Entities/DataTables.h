@@ -83,6 +83,7 @@ struct ProjectileData
     Particle::Type particleType;
     Textures::ID texture;
     sf::Vector2f emitterPosition;
+    Animation::Type explode_Anim;
 };
 
 struct ParticleData
@@ -116,6 +117,11 @@ struct DebrisData
     Sounds::ID explosionSound;
 };
 
+struct HudData
+{
+    Textures::ID background;
+};
+
 std::vector<SpaceShipData> initSpaceship();
 std::vector<WeaponData> initWeapons();
 std::vector<ProjectileData> initProjectiles();
@@ -123,5 +129,6 @@ std::vector<ParticleData> initParticleData();
 std::vector<AnimationData> initAnimationData();
 std::vector<ShieldData> initShields();
 std::vector<DebrisData> initDebris();
+std::vector<HudData> initHud();
 
 #endif // DATATABLES_H

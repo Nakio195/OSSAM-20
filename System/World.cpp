@@ -46,6 +46,7 @@ void World::update(sf::Time dt)
     }
 
     cleanOutterWorld();
+
     mSceneGraph.update(dt, mCommandQueue);
     mSceneGraph.cleanSceneGraph();
 
@@ -108,6 +109,30 @@ void World::handleCollisions()
     position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
     mPlayerSpaceship->setPosition(position);
 
+    //Triggers and handle View locks
+    if(!mLevelLocks.empty())
+    {
+        if(mPlayerSpaceship->getPosition().x >= mLevelLocks.back()->x && !mLevelLocks.back()->triggered)
+        {
+            mViewLocked = true;
+            mLevelLocks.back()->triggered = true;
+        }
+
+        if(mLevelLocks.back()->triggered)
+        {
+            if(mLevelLocks.back()->on)
+            {
+                mLevelLocks.back()->on = false;
+                mCommandQueue.push(mLevelLocks.back()->releaseCondition);
+            }
+            else
+            {
+                mViewLocked = false;
+                mLevelLocks.pop_back();
+            }
+        }
+    }
+
     //Check pairs collisions
     std::set<SceneNode::pair> collisionPairs;
     mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
@@ -130,9 +155,9 @@ void World::handleCollisions()
             auto& spaceship = static_cast<Spaceship&>(*pair.first);
             auto& projectile = static_cast<Projectile&>(*pair.second);
 
-            if(!spaceship.isDying())
+            if(!spaceship.isDying() && !projectile.isDying())
             {
-                // Apply projectile damage to aircraft, destroy projectile
+                // Apply projectile damage to aircraft, kill projectile
                 spaceship.takeDamage(projectile);
                 projectile.kill();
             }
@@ -153,9 +178,12 @@ void World::handleCollisions()
             auto& debris = static_cast<Debris&>(*pair.first);
             auto& projectile = static_cast<Projectile&>(*pair.second);
 
-            // Apply projectile damage to aircraft, destroy projectile
-            debris.takeDamage(projectile.getDamage());
-            projectile.kill();
+            // Apply projectile damage to aircraft, kill projectile
+            if(!projectile.isDying())
+            {
+                debris.takeDamage(projectile.getDamage());
+                projectile.kill();
+            }
         }
 
     }
@@ -181,7 +209,16 @@ void World::cleanOutterWorld()
             node.destroy();
     });
 
+    Command removeEnnemiesProjectile;
+    removeEnnemiesProjectile.category = Category::EnemyProjectile;
+    removeEnnemiesProjectile.action = derivedAction<Entity>([this] (Entity& node, sf::Time)
+    {
+        if(!this->getViewBounds(300, 200).intersects(node.getBoundingRect()))
+            node.destroy();
+    });
+
     mCommandQueue.push(remove);
+    mCommandQueue.push(removeEnnemiesProjectile);
 }
 
 CommandQueue& World::getCommandQueue()
@@ -223,6 +260,12 @@ void World::draw()
     debug.setString("WorldView : " + toString(mWorldView.getCenter().x));
     mWindow.draw(debug);
 
+    mSceneGraph.SceneCount = 0;
+    mSceneGraph.isSceneGraphChanged();
+    debug.setPosition(10, 90);
+    debug.setString("Object Count : " + toString(mSceneGraph.SceneCount));
+    mWindow.draw(debug);
+
 }
 
 void World::loadTextures()
@@ -257,7 +300,6 @@ void World::loadFonts()
     mFonts.load(Fonts::Main, "Ressources/consola.ttf");
     mFonts.load(Fonts::KLM, "Ressources/TYPO KLM.ttf");
 }
-
 
 bool World::hasAlivePlayer()
 {
@@ -337,19 +379,36 @@ void World::buildScene()
     mSceneLayers[Space]->attachChild(std::move(asteroidGenerator));
 
 
-    // Add ennemies
+    // Add ennemies and view lock
     addEnemy(Spaceship::Intercepter, 1500.f, 0.f);
+    addLevelLock(1000);
 
     addEnemy(Spaceship::Intercepter,    2500.f, 200.f);
     addEnemy(Spaceship::Blade,    2400.f, 0);
     addEnemy(Spaceship::Intercepter, 2500.f, -200.f);
+    addLevelLock(2000);
 
     addEnemy(Spaceship::Blade, 3400.f, -140.f);
     addEnemy(Spaceship::Blade, 3600.f, 70.f);
     addEnemy(Spaceship::Blade, 3400.f, 140.f);
     addEnemy(Spaceship::Blade, 3600.f, -70.f);
+    addLevelLock(3000);
 }
 
+
+void World::addLevelLock(float x)
+{
+    LevelLock::ptr Lock(new LevelLock(x));
+
+    mLevelLocks.push_back(std::move(Lock));
+
+    auto SortByX = [] (const LevelLock::ptr &LockA, const LevelLock::ptr &LockB)
+    {
+        return LockA->x > LockB->x;
+    };
+
+    std::sort(mLevelLocks.begin(), mLevelLocks.end(), SortByX);
+}
 
 void World::addEnemy(Spaceship::Type type, float x, float y)
 {

@@ -45,6 +45,8 @@ class SceneNode : public sf::Drawable, public sf::Transformable, private sf::Non
 
         unsigned long getID();
 
+        static unsigned long SceneCount;
+
     protected:
         unsigned int mDefaultCategory;
         bool mNeedRemove;

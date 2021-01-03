@@ -126,7 +126,7 @@ void Spaceship::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) c
     else
         target.draw(mDyingAnim, states);
 
-    Entity::drawForces(target, states);
+    //Entity::drawForces(target, states);
 }
 
 bool Spaceship::isAllied() const

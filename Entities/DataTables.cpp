@@ -6,6 +6,8 @@
 #include "Items/Weapons/Weapon.h"
 #include "Items/Shield.h"
 
+// HUD Question ? Le background est stocké dans les data de l'entité ou dans sa propre structure ?
+
 std::vector<SpaceShipData> initSpaceship()
 {
     std::vector<SpaceShipData> data(Spaceship::TypeCount);
@@ -110,12 +112,14 @@ std::vector<ProjectileData> initProjectiles()
     data[Projectile::LaserRed].particleType = Particle::RedSmoke;
     data[Projectile::LaserRed].emitterPosition = sf::Vector2f(20.f, 0.f);
     data[Projectile::LaserRed].texture = Textures::LaserRed;
+    data[Projectile::LaserRed].explode_Anim = Animation::LaserBlue_Fire;
 
     data[Projectile::LaserBlue].damage = 5;
-    data[Projectile::LaserBlue].speed = 800.f;
+    data[Projectile::LaserBlue].speed = 1800.f;
     data[Projectile::LaserBlue].particleType = Particle::BlueSmoke;
     data[Projectile::LaserBlue].emitterPosition = sf::Vector2f(20.f, 0.f);
     data[Projectile::LaserBlue].texture = Textures::LaserBlue;
+    data[Projectile::LaserBlue].explode_Anim = Animation::LaserBlue_Fire;
 
     return data;
 }
@@ -163,7 +167,7 @@ std::vector<ParticleData> initParticleData()
     data[Particle::RedSmoke].lifetime = sf::seconds(0.6f);
 
     data[Particle::BlueSmoke].color = sf::Color(162, 255, 255);
-    data[Particle::BlueSmoke].lifetime = sf::seconds(0.2f);
+    data[Particle::BlueSmoke].lifetime = sf::seconds(0.1f);
 
     return data;
 }
@@ -172,17 +176,23 @@ std::vector<DebrisData> initDebris()
 {
     std::vector<DebrisData> data(Debris::DebrisCount);
 
-    data[Debris::Spaceship].life = 20;
+    data[Debris::Spaceship].life = 2;
     data[Debris::Spaceship].speed = 200;
     data[Debris::Spaceship].texture = Textures::SpaceshipDebris;
     data[Debris::Spaceship].explosionSound = Sounds::ClassicExplode;
 
-    data[Debris::Asteroid].life = 100;
+    data[Debris::Asteroid].life = 10;
     data[Debris::Asteroid].speed = 50;
     data[Debris::Asteroid].texture = Textures::AsteroidDebris;
     data[Debris::Asteroid].explosionSound = Sounds::ClassicExplode;
 
     return data;
+}
 
+std::vector<HudData> initHud()
+{
+    std::vector<HudData> data(HudNode::HudCount);
+
+    data[]
 }
 
